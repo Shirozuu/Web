@@ -16,6 +16,7 @@
             await loadData( "poster" );
             await loadData( "src" );
             await loadData( "srcset" );
+            await loadData( "img" )
 
 
             if ( !$off ) {
