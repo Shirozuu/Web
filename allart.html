@@ -41,22 +41,7 @@
         // Some functions work only after window load 
     }
     
-    $(window).load(htmlLoaded); // called on page load
-    
-    $(function() {
-        $(document).on('click', '.pagination a', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: this.href,
-                dataType: 'html',
-                success: function(html) {
-                    var styleHtml = $(html).find('#style');
-                    $('#style').html(styleHtml);
-                    htmlLoaded(); // called after the AJAX request completes successfully
-                }); 
-            });
-        });
-    });
+   
   </script>
   
 
@@ -76,19 +61,7 @@
 
 <body class="v-dark dsn-line-style dsn-effect-scroll dsn-cursor-effect dsn-ajax">
 
-    <!-- ========== Loading Page ========== -->
-    <div class="preloader">
-        <span class="percent">0</span>
-        <span class="loading-text text-uppercase">Loading ...</span>
-        <div class="preloader-bar">
-            <div class="preloader-progress"></div>
-        </div>
-
-        <h1 class="title v-middle">
-            <span class="text-strok">kiki</span>
-            <span class="text-fill">kiki</span>
-        </h1>
-    </div>
+   
     <!-- ========== End Loading Page ========== -->
 
 
