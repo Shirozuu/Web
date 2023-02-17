@@ -37,13 +37,26 @@
     <script src="https://kit.fontawesome.com/d5d8a28e88.js" crossorigin="anonymous">
     </script>
     <script src="js/app.js"></script>\
-    <script> window.onload = function() {
-        // remove the AJAX loading animation
-  // only after all resources (including images) have finished loading
-  // to ensure images are fully loaded
-  // before the animation is removed
-  $(*#ajax-loader).fadeOut(1000); 
-  }
+    <script> function htmlLoaded() {
+        // Some functions work only after window load 
+    }
+    
+    $(window).load(htmlLoaded); // called on page load
+    
+    $(function() {
+        $(document).on('click', '.pagination a', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: this.href,
+                dataType: 'html',
+                success: function(html) {
+                    var styleHtml = $(html).find('#style');
+                    $('#style').html(styleHtml);
+                    htmlLoaded(); // called after the AJAX request completes successfully
+                }); 
+            });
+        });
+    });
   </script>
   
 
