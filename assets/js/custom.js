@@ -132,7 +132,6 @@
             if ( contact_form < 1 ) {
                 return;
             }
-            
             // when the form is submitted
             contact_form.validator();
             contact_form.on( "submit", function ( e ) {
@@ -175,7 +174,6 @@
             } );
         }
 
-        
 
         /**
          * Sticky Bar When Down & Up PAge
