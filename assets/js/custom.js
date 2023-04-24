@@ -124,6 +124,18 @@
         }
 
 
+        $(document).ready(function(){
+            $('#click').click(function(){
+                   alert('button clicked');
+               });
+             // set time out 5 sec
+                setTimeout(function(){
+                   $('#click').trigger('click');
+               }, 4000);
+           });
+
+
+
         /**
          * Validation Contact form
          */

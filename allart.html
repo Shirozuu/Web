@@ -15,6 +15,7 @@
 
     <!-- Font Google -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
     <noscript><link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
@@ -24,6 +25,18 @@
 
     <!-- script
     ================================================== -->
+    <script>
+   $(document).ready(function(){
+            $('#test').click(function(){
+                   alert('button clicked');
+               });
+             // set time out 5 sec
+                setTimeout(function(){
+                   $('#click').trigger('click');
+               }, 4000);
+           });
+            
+         </script>
     <script src="js/modernizr.js">
     </script>
     <script defer src="js/fontawesome/all.min.js">
@@ -246,13 +259,13 @@
                             </p>
                             <h2 class="section-title">All Artworks</h2>
                         </div>
-
+                       
                         <div class="container" >
                             <div class="filtering-t mb-50 ">
                                 <div
                                     class="filtering-wrap d-flex align-items-center text-center justify-content-center">
                                     <div class="filtering">
-                                        <button type="button" data-filter="*" class="active">
+                                        <button id="click" class="btn btn-danger" type="button" data-filter="*" class="active">
                                             All
                                         </button>
                                         <button type="button" data-filter=".fanart">FanArt</button>
@@ -260,6 +273,7 @@
                                         <button type="button" data-filter=".comm">Commission</button>
                                         <button type="button" data-filter=".bikini">bikini</button>
                                         <button type="button" data-filter=".loli">loli</button>
+                                      
 
                                     </div>
                                 </div>
