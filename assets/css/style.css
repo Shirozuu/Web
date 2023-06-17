@@ -43,14 +43,18 @@
 
 -------------------------------------------------------------*/
 .text-container {
-    position: relative;
-    width: 200%;
+   
+    width: 100%;
     display: inline-block;
+    position:relative;
+    z-index: 1;
+    top: 0;
+    left:0;
   }
   
   .text-container h2 {
     position: relative;
-    z-index: 4;
+    z-index: 2;
     transition: color 0.3s ease;
   }
   
@@ -65,7 +69,7 @@
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-custom-image-wrapper {
+.custom-image-wrapper {
   position: relative;
   
 }
@@ -81,7 +85,8 @@ custom-image-wrapper {
 }
 
 .image1 {
-  /* Add custom styles for Image 1 if needed */
+  width: 100%;
+  height: auto;/* Add custom styles for Image 1 if needed */
 }
 
 .image2 {
