@@ -41,61 +41,57 @@
       - captions
     12.Version Light
 
--------------------------------------------------------------*/
+/* Text container */
 .text-container {
-   
-    width: 200%;
-    display: inline-block;
-    position: relative;
- 
-    top: 0;
-    left:0;
-  }
-  
-  .text-container h2 {
-    position: relative;
-    z-index: 2;
-    transition: color 0.3s ease;
-  }
-  
-  .text-container:hover h2 {
-    color: transparent;
-  }
-  
-  .hidden-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-.custom-image-wrapper {
+  display: inline-block;
+  width: 200%;
+  height: auto;
   position: relative;
-  
 }
 
-.custom-image-wrapper img {
+/* Default text style */
+.text-container h1 {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  margin: 0; /* Reset margin to remove space around the heading */
+}
+
+/* Text hover effect */
+.text-container:hover h5 {
+  opacity: 0;
+}
+
+/* Hovered image container */
+.hover-image-container {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%; /* Adjust the width of the image as needed */
-  height: auto; /* Maintain the aspect ratio of the image */
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none; /* Disable pointer events to prevent hover trigger */
 }
 
-.image1 {
-  width: 100%;
-  height: auto;/* Add custom styles for Image 1 if needed */
-}
-
-.image2 {
-  /* Add custom styles for Image 2 if needed */
-}
-
-.text-container:hover .hidden-image {
+/* Text hover effect */
+.text-container:hover .hover-image-container {
   opacity: 1;
+  pointer-events: auto; /* Enable pointer events on hover */
 }
+
+/* Fade-in animation */
+.hover-image-container .hover-image {
+  opacity: 0;
+  animation: fade-in 0.3s forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+  
+  
+  
+  
+  
 
 
 :root,
