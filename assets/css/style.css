@@ -46,8 +46,8 @@
    
     width: 200%;
     display: inline-block;
-    position: top;
-    z-index: 1;
+    position: relative;
+ 
     top: 0;
     left:0;
   }
