@@ -47,6 +47,13 @@ setTimeout(function(){
 	initCursor();
 }, 1000)
 
+$(document).ready(function () {
+  if (!$('body').hasClass('disable-cursor')) {
+    // Initialize the cursor functionality
+    // ...
+  }
+});
+
 // non clickable elements
 BLOBBER.each(function() {
   $(this).on({
@@ -75,4 +82,5 @@ BLOBBER.each(function() {
 });
 
 $(".nav__icon").click(function() {
-  toggleNav();
+  toggleNav() };
+
