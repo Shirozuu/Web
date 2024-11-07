@@ -14,6 +14,7 @@
     <meta content="Rudy's portfolio" property="og:title" />
     <meta content="Home page" property="og:description" />
     <meta content="https://shirozu.tk/#a" property="og:url" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <meta content="#FFFFFF" data-react-helmet="true" name="theme-color" />
 
@@ -32,6 +33,8 @@
     <!-- custom styles (optional) -->
     <link href="assets/css/plugins.css" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="preload" href="assets/css/style.css" as="style">
+    <link rel="preload" href="assets/js/custom.js" as="script">
     
 </head>
 
@@ -84,31 +87,23 @@
                             <span class="dsn-title-menu">Home</span>
                         </a>
                     </li>
-
-
                     <li class="dsn-drop-down">
                         <a href="about.html" class="user-no-selection">
                             <span class="dsn-title-menu">About</span>
                         </a>
-
-
-
-                        <li>
-                            <a href="TOS.html">
-                                <span class="dsn-title-menu">Terms and Service</span>
-
-                                <span class="dsn-bg-arrow"></span>
-                            </a>
-                        </li>
-
-                       
-                        <li>
-                            <a href="comminfo.html">
-                                <span class="dsn-title-menu">Commission Pricing/list</span>
-    
-                                <span class="dsn-bg-arrow"></span>
-                            </a>
-                        </li>
+                    </li>
+                    <li>
+                        <a href="TOS.html">
+                            <span class="dsn-title-menu">Terms and Service</span>
+                            <span class="dsn-bg-arrow"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="comminfo.html">
+                            <span class="dsn-title-menu">Commission Pricing/list</span>
+                            <span class="dsn-bg-arrow"></span>
+                        </a>
+                    </li>
                         
                         <!--<li class="dsn-drop-down">
                             <a href="#" class="user-no-selection">
@@ -210,7 +205,8 @@
     </div>
     <!-- ========== End Menu ========== -->
 
-    <main class="main-root">
+    <main class="main-root" data-dsn-animate="section"
+    data-dsn-option='{"slidesPerView":1.5  }' data-dsn-title="toP">
         <div id="dsn-scrollbar">
              <!-- ========== Header Normal ========== -->
              <header
@@ -495,7 +491,7 @@
                             </a>
 
                             <p class="sm-p mt-15 theme-color">
-                                NOTE : First make sure to read the terms and service, <a href="index.html">TOS</a>
+                                NOTE : First make sure to read the terms and service, <a href="TOS.html">Terms and Service</a>
                             </p>
                         </div>
                     </div>
@@ -559,7 +555,7 @@
             </div>
 
             <!-- ========== Contact Form Model ========== -->
-            <div class="contact-btn">
+            <div class="contact-btn" aria-label="Open contact form">
                 <div class="contact-btn-txt">Want to commission me?</div>
             </div>
             <div class="contact-modal background-section">
