@@ -93,3 +93,6 @@ export default async function handler(req, res) {
         });
     }
 }
+console.log('GitHub Token:', process.env.GITHUB_TOKEN);
+console.log('GitHub Owner:', process.env.GITHUB_OWNER);
+console.log('GitHub Repo:', process.env.GITHUB_REPO);
