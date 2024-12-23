@@ -6,7 +6,17 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Validate environment variables
+        if (!process.env.GITHUB_TOKEN) {
+            throw new Error('GitHub token is missing');
+        }
+
         const { imageUrl, title, category, socialLink, html } = req.body;
+
+        // Validate required fields
+        if (!imageUrl || !title || !category) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
 
         // Initialize Octokit
         const octokit = new Octokit({
