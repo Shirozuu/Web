@@ -5,6 +5,7 @@ async function handler(event) {
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Content-Type': 'application/json'
     };
 
@@ -31,6 +32,17 @@ async function handler(event) {
     try {
         const { imageUrl, title, category, socialLink } = JSON.parse(event.body);
         
+        // Validate required fields
+        if (!imageUrl || !title || !category) {
+            return {
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({
+                    message: 'Missing required fields'
+                })
+            };
+        }
+
         // Create artwork HTML
         const artworkHTML = `
             <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">

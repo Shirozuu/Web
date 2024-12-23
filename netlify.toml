@@ -2,7 +2,7 @@
   functions = "functions"
 
 [[redirects]]
-  from = "/api/update-gallery"
+  from = "/.netlify/functions/update-gallery"
   to = "/.netlify/functions/update-gallery"
   status = 200
   force = true
@@ -10,4 +10,3 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["@netlify/functions"]
