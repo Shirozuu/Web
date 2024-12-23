@@ -33,18 +33,23 @@ export default async function handler(req, res) {
         // Decode content
         const content = Buffer.from(currentFile.content, 'base64').toString();
 
-        // Find gallery section and insert new artwork
+        // Find gallery section opening tag
         const gallerySection = '<div id="gallery-section" class="d-grid  grid-lg-3  grid-md-2 dsn-item-filter  dsn-isotope dsn-col v-dark-head"';
         const insertPosition = content.indexOf(gallerySection);
-        
+
         if (insertPosition === -1) {
             throw new Error('Gallery section not found in index.html');
         }
 
-        // Insert the new artwork HTML
-        const updatedContent = content.slice(0, insertPosition + gallerySection.length) + 
-            '>\n' + html + '\n' + 
-            content.slice(insertPosition + gallerySection.length);
+        // Find where to insert the new artwork (after the opening tag)
+        const openingTagEnd = content.indexOf('>', insertPosition) + 1;
+        
+        // Insert the new artwork HTML right after the gallery section opening tag
+        const updatedContent = 
+            content.slice(0, openingTagEnd) + 
+            '\n                                ' + // Maintain indentation
+            html +
+            content.slice(openingTagEnd);
 
         // Update the file in GitHub
         await octokit.repos.createOrUpdateFileContents({
