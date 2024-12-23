@@ -68,6 +68,16 @@
                 const gallerySection = document.querySelector('.dsn-isotope');
                 if (gallerySection) {
                     gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
+
+                    // Scroll to the top of the gallery section to show the new artwork
+                    gallerySection.scrollIntoView({ behavior: 'smooth' });
+
+                    // Refresh gallery if isotope is present
+                    if (typeof $().isotope === 'function') {
+                        $('.dsn-isotope').isotope('reloadItems').isotope();
+                    }
+                } else {
+                    console.error('Gallery section not found');
                 }
 
                 // Show preview
@@ -80,14 +90,6 @@
                 
                 // Reset form
                 document.getElementById('upload-form').reset();
-
-                // Refresh gallery if isotope is present
-                if (typeof $().isotope === 'function') {
-                    $('.dsn-isotope').isotope('reloadItems').isotope();
-                }
-
-                // Scroll to the top of the gallery section to show the new artwork
-                gallerySection.scrollIntoView({ behavior: 'smooth' });
             }
         });
 
