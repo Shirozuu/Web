@@ -3,105 +3,240 @@
 <head>
     <title>Upload Artwork</title>
     <link href="assets/css/style.css" rel="stylesheet" />
-    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+    <link href="css/vendor1.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .admin-upload {
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--heading-color);
+            padding: 120px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-container {
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            background-color: var(--assistant-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        #upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--heading-color);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--theme-color);
+            outline: none;
+        }
+
+        button {
+            background-color: var(--theme-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background-color: var(--theme-color-2);
+        }
+
+        #upload-status {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        #preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #preview img {
+            max-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background-color: var(--assistant-color);
+            color: var(--heading-color);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff4444;
+            color: white;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="admin-upload">
-        <h2>Upload New Artwork</h2>
-        <form id="upload-form">
-            <input type="text" id="title" placeholder="Artwork Title" required>
-            <select id="category" required>
-                <option value="fanart">FanArt</option>
-                <option value="occhara">OC</option>
-                <option value="comm">Commission</option>
-                <option value="male">Male</option>
-                <option value="landscape">Splash Art</option>
-                <option value="vtube">Vtubers</option>
-            </select>
-            <input type="text" id="social_link" placeholder="Social Media Link">
-            <input type="file" accept="image/*" id="image">
-            <button type="submit">Upload</button>
-        </form>
-        <div id="upload-status"></div>
-        <div id="preview"></div>
-        <a href="logout.html">Logout</a>
+        <h2 class="title-block sec-title" data-aos="fade-up">Upload New Artwork</h2>
+        <div class="upload-container" data-aos="fade-up" data-aos-delay="200">
+            <form id="upload-form">
+                <input type="text" id="title" placeholder="Artwork Title" required>
+                <select id="category" required>
+                    <option value="fanart">FanArt</option>
+                    <option value="occhara">OC</option>
+                    <option value="comm">Commission</option>
+                    <option value="male">Male</option>
+                    <option value="landscape">Splash Art</option>
+                    <option value="vtube">Vtubers</option>
+                </select>
+                <input type="text" id="social_link" placeholder="Social Media Link">
+                <input type="file" accept="image/*" id="image" required>
+                <button type="submit" class="btn" data-aos="fade-up" data-aos-delay="400">Upload Artwork</button>
+            </form>
+            <div id="upload-status"></div>
+            <div id="preview"></div>
+        </div>
+        <a href="logout.html" class="logout-btn" data-aos="fade-left">Logout</a>
     </div>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-    document.getElementById('upload-form').onsubmit = async (e) => {
-        e.preventDefault();
-        
-        try {
-            const formData = new FormData();
-            formData.append('image', document.getElementById('image').files[0]);
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 50
+        });
+
+        // Preview image before upload
+        document.getElementById('image').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('preview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // Form submission handler
+        document.getElementById('upload-form').onsubmit = async (e) => {
+            e.preventDefault();
             
-            // Upload image to Cloudinary
-            const uploadRes = await fetch('/api/upload-image', {
-                method: 'POST',
-                body: formData
+            try {
+                // Get form data
+                const title = document.getElementById('title').value;
+                const category = document.getElementById('category').value;
+                const socialLink = document.getElementById('social_link').value || '#';
+                const file = document.getElementById('image').files[0];
+                const imagePath = `assets/Artworks NEW/${file.name}`;
+
+                // Create new artwork HTML content
+                const newArtwork = `
+                    <div class="folio-item work-item dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
+                        <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb"
+                            data-overlay="0">
+                            <a class="folio-item__thumb-link" target="blank" href="${imagePath}" title="${title}" data-size="905x1280">
+                                <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imagePath}" alt="">
+                            </a>
+                        </div>
+                        <div class="folio-item__info">
+                            <div class="folio-item__cat">illustration/${category}</div>
+                            <h4 class="folio-item__title">${title}!</h4>
+                        </div>
+                        <a target="blank" href="${socialLink}" title="Twitter" class="folio-item__project-link">Twitter</a>
+                        <div class="folio-item__caption">
+                            <p>Twitter</p>
+                        </div>
+                    </div>`;
+
+                // Upload image file
+                const fileData = await fetch('/api/github-upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        path: imagePath,
+                        content: await toBase64(file),
+                        message: `Upload artwork: ${title}`
+                    })
+                });
+
+                if (!fileData.ok) throw new Error('Failed to upload image');
+
+                // Update index.html
+                const res = await fetch('/api/github-upload', {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        path: 'index.html',
+                        message: `Add artwork: ${title}`,
+                        content: newArtwork
+                    })
+                });
+
+                if (!res.ok) throw new Error('Failed to update index.html');
+
+                document.getElementById('upload-status').textContent = 'Upload successful!';
+                document.getElementById('upload-form').reset();
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('upload-status').textContent = 'Upload failed: ' + error.message;
+            }
+        };
+
+        // Helper function to convert file to base64
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
             });
-            
-            if (!uploadRes.ok) {
-                throw new Error('Failed to upload image');
-            }
-            
-            const { url } = await uploadRes.json();
-
-            // Generate the HTML for the new artwork entry
-            const html = `
-                <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${document.getElementById('category').value}" data-aos="fade-up">
-                    <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb" data-overlay="0">
-                        <a class="folio-item__thumb-link" target="blank" href="${url}" title="${document.getElementById('title').value}" data-size="905x1280">
-                            <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${url}" alt="">
-                        </a>
-                    </div>
-                    <div class="folio-item__info">
-                        <div class="folio-item__cat">illustration/${document.getElementById('category').value}</div>
-                        <h4 class="folio-item__title">${document.getElementById('title').value}!</h4>
-                    </div>
-                    ${document.getElementById('social_link').value ? `<a target="blank" href="${document.getElementById('social_link').value}" title="Twitter" class="folio-item__project-link">Twitter</a>` : ''}
-                    <div class="folio-item__caption">
-                        <p>${document.getElementById('title').value}</p>
-                    </div>
-                </div>`;
-
-            // Update gallery through API
-            const updateRes = await fetch('/api/update-gallery', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    html: html,
-                    title: document.getElementById('title').value,
-                    category: document.getElementById('category').value,
-                    imageUrl: url,
-                    socialLink: document.getElementById('social_link').value
-                })
-            });
-
-            if (!updateRes.ok) {
-                throw new Error('Failed to update gallery');
-            }
-
-            const result = await updateRes.json();
-            
-            if (result.success) {
-                // Store artwork in localStorage for immediate display
-                localStorage.setItem('newArtwork', html);
-                // Redirect to gallery
-                window.location.href = 'index.html';
-            } else {
-                throw new Error(result.error || 'Failed to update gallery');
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('upload-status').textContent = error.message;
-            document.getElementById('upload-status').style.color = 'red';
         }
-    };
     </script>
 </body>
 </html>
