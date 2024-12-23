@@ -11,12 +11,7 @@ export default async function handler(req, res) {
             throw new Error('GitHub token is missing');
         }
 
-        const { imageUrl, title, category, socialLink, html } = req.body;
-
-        // Validate required fields
-        if (!imageUrl || !title || !category) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
+        const { html } = req.body;
 
         // Initialize Octokit
         const octokit = new Octokit({
@@ -48,7 +43,7 @@ export default async function handler(req, res) {
             owner: process.env.GITHUB_OWNER,
             repo: process.env.GITHUB_REPO,
             path: 'index.html',
-            message: `Add new artwork: ${title}`,
+            message: 'Add new artwork',
             content: Buffer.from(updatedContent).toString('base64'),
             sha: currentFile.sha
         });

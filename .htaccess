@@ -1,8 +1,0 @@
-# Protect PHP files
-<FilesMatch "^(admin-|process-|logout).*\.php$">
-    Order Allow,Deny
-    Deny from all
-    Allow from 127.0.0.1
-    # Add your IP address here
-    Allow from YOUR_IP_ADDRESS
-</FilesMatch>
