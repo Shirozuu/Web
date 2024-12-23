@@ -1,4 +1,6 @@
 const { builder } = require("@netlify/functions");
+const fs = require('fs').promises;
+const path = require('path');
 
 async function handler(event) {
     // CORS headers
@@ -60,6 +62,24 @@ async function handler(event) {
                     <p>${title}</p>
                 </div>
             </div>`;
+
+        const indexPath = path.join(__dirname, '../index.html');
+        
+        // Read index.html
+        let content = await fs.readFile(indexPath, 'utf8');
+        
+        // Find insertion point
+        const insertPoint = content.indexOf('<!-- ========== Work Section ========== -->');
+        
+        if (insertPoint === -1) {
+            throw new Error('Could not find insertion point in index.html');
+        }
+        
+        // Insert new artwork HTML
+        content = content.slice(0, insertPoint) + artworkHTML + content.slice(insertPoint);
+        
+        // Write updated content back to file
+        await fs.writeFile(indexPath, content, 'utf8');
 
         return {
             statusCode: 200,
