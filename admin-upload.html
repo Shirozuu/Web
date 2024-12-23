@@ -158,6 +158,16 @@
             }
         };
 
+        // Convert file to base64
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
         // Form submission handler
         document.getElementById('upload-form').onsubmit = async (e) => {
             e.preventDefault();
@@ -172,7 +182,7 @@
                 const imageBase64 = await toBase64(file);
                 const imagePath = `assets/Artworks NEW/${file.name}`;
                 
-                const imageUpload = await fetch('api/github-upload', { // Remove the leading slash
+                const imageUpload = await fetch('/api/github-upload', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -189,11 +199,22 @@
                     throw new Error(error.error || 'Failed to upload image');
                 }
 
-                // Now get the current index.html content
-                const indexGet = await fetch('index.html');
+                // Now get the current index.html content through the GitHub API instead
+                const indexGet = await fetch('/api/github-upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        path: 'index.html',
+                        action: 'get'
+                    })
+                });
+
                 if (!indexGet.ok) throw new Error('Failed to get index.html');
                 
-                let indexContent = await indexGet.text();
+                const indexData = await indexGet.json();
+                let indexContent = Buffer.from(indexData.content, 'base64').toString();
                 
                 // Create new artwork HTML
                 const newArtwork = `
@@ -214,7 +235,12 @@
                         </div>
                     </div>`;
 
-                const indexUpdate = await fetch('api/github-upload', { // Remove the leading slash
+                // Insert the new artwork
+                const insertPoint = indexContent.indexOf('<!-- ========== Work Section ========== -->');
+                indexContent = indexContent.slice(0, insertPoint) + newArtwork + indexContent.slice(insertPoint);
+
+                // Update index.html on GitHub
+                const indexUpdate = await fetch('/api/github-upload', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -240,16 +266,6 @@
                 document.getElementById('upload-status').textContent = 'Upload failed: ' + error.message;
             }
         };
-
-        // Helper function to convert file to base64
-        function toBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = error => reject(error);
-            });
-        }
     </script>
 </body>
 </html>

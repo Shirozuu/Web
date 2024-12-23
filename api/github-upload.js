@@ -3,14 +3,34 @@ module.exports = async (req, res) => {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { path, content, message } = req.body;
+    const { path, content, message, action } = req.body;
 
     try {
         // Get current file content if exists
+        if (action === 'get') {
+            const response = await fetch(
+                `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`,
+                {
+                    headers: {
+                        'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return res.status(200).json(data);
+        }
+
+        // Upload/update file
         let sha;
         try {
             const getResponse = await fetch(
-                `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`, 
+                `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`,
                 {
                     headers: {
                         'Authorization': `token ${process.env.GITHUB_TOKEN}`,
@@ -26,7 +46,6 @@ module.exports = async (req, res) => {
             // File doesn't exist yet, which is fine
         }
 
-        // Create or update file
         const response = await fetch(
             `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`,
             {
