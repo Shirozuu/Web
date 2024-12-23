@@ -61,30 +61,24 @@
                         <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Twitter</a>
                     </div>`;
 
-                // Add to gallery section
-                const gallerySection = document.getElementById('gallery-section');
-                if (gallerySection) {
-                    // Insert at the beginning of the gallery
-                    gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
+                // Show preview
+                document.getElementById('preview').innerHTML = artworkHTML;
+                
+                // Show success message
+                const status = document.getElementById('upload-status');
+                status.textContent = 'Upload successful! Redirecting to gallery...';
+                status.style.color = 'green';
+                
+                // Reset form
+                document.getElementById('upload-form').reset();
 
-                    // Show preview
-                    document.getElementById('preview').innerHTML = artworkHTML;
-                    
-                    // Show success message
-                    const status = document.getElementById('upload-status');
-                    status.textContent = 'Upload successful! Artwork added to gallery.';
-                    status.style.color = 'green';
-                    
-                    // Reset form
-                    document.getElementById('upload-form').reset();
+                // Store the new artwork HTML in localStorage
+                localStorage.setItem('newArtwork', artworkHTML);
 
-                    // Refresh isotope layout
-                    if (typeof $().isotope === 'function') {
-                        $('.dsn-isotope').isotope('reloadItems').isotope();
-                    }
-                } else {
-                    console.error('Gallery section not found - check the gallery-section ID exists');
-                }
+                // Redirect to index.html after a short delay
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
             }
         });
 

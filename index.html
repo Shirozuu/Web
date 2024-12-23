@@ -1088,6 +1088,31 @@
                                     <script src="assets/js/plugins.min.js"></script>
                                     <script src="assets/js/dsn-grid.min.js"></script>
                                     <script src="assets/js/custom.js"></script>
+                                    <script>
+                                        // Check for new artwork in localStorage
+                                        window.addEventListener('load', function() {
+                                            const newArtwork = localStorage.getItem('newArtwork');
+                                            if (newArtwork) {
+                                                // Get the gallery section
+                                                const gallerySection = document.getElementById('gallery-section');
+                                                if (gallerySection) {
+                                                    // Insert the new artwork at the beginning
+                                                    gallerySection.insertAdjacentHTML('afterbegin', newArtwork);
+                                                    
+                                                    // Clear the stored artwork
+                                                    localStorage.removeItem('newArtwork');
+                                        
+                                                    // Refresh isotope layout if present
+                                                    if (typeof $().isotope === 'function') {
+                                                        $('.dsn-isotope').isotope('reloadItems').isotope();
+                                                    }
+                                        
+                                                    // Scroll to the new artwork
+                                                    gallerySection.scrollIntoView({ behavior: 'smooth' });
+                                                }
+                                            }
+                                        });
+                                        </script>
                                     
 </body>
 
