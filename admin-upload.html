@@ -61,7 +61,7 @@
                 status.textContent = 'Updating gallery...';
                 status.style.color = 'blue';
 
-                const response = await fetch('/.netlify/functions/update-gallery', {
+                const response = await fetch('/api/update-gallery', { // Updated endpoint
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

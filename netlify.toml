@@ -2,7 +2,7 @@
   functions = "functions"
 
 [[redirects]]
-  from = "/.netlify/functions/update-gallery"
+  from = "/api/update-gallery"
   to = "/.netlify/functions/update-gallery"
   status = 200
   force = true
