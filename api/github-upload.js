@@ -42,10 +42,7 @@ module.exports = async (req, res) => {
             }
         });
 
-        res.status(200).json({ 
-            success: true,
-            sha: response.data.content.sha 
-        });
+        res.status(200).json({ success: true });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Failed to upload file to GitHub' });

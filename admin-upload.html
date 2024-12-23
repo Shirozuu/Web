@@ -172,7 +172,7 @@
                 const imageBase64 = await toBase64(file);
                 const imagePath = `assets/Artworks NEW/${file.name}`;
                 
-                const imageUpload = await fetch('/api/github-upload', {
+                const imageUpload = await fetch('api/github-upload', { // Remove the leading slash
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -184,14 +184,17 @@
                     })
                 });
 
-                if (!imageUpload.ok) throw new Error('Failed to upload image');
+                if (!imageUpload.ok) {
+                    const error = await imageUpload.json();
+                    throw new Error(error.error || 'Failed to upload image');
+                }
 
                 // Now get the current index.html content
                 const indexGet = await fetch('index.html');
                 if (!indexGet.ok) throw new Error('Failed to get index.html');
                 
                 let indexContent = await indexGet.text();
-
+                
                 // Create new artwork HTML
                 const newArtwork = `
                     <div class="folio-item work-item dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
@@ -211,15 +214,10 @@
                         </div>
                     </div>`;
 
-                // Find insertion point in index.html
-                const insertPoint = indexContent.indexOf('<!-- ========== Work Section ========== -->');
-                indexContent = indexContent.slice(0, insertPoint) + newArtwork + indexContent.slice(insertPoint);
-
-                // Update index.html on GitHub
-                const indexUpdate = await fetch('/api/github-upload', {
+                const indexUpdate = await fetch('api/github-upload', { // Remove the leading slash
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'  
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         path: 'index.html',
@@ -228,7 +226,10 @@
                     })
                 });
 
-                if (!indexUpdate.ok) throw new Error('Failed to update index.html');
+                if (!indexUpdate.ok) {
+                    const error = await indexUpdate.json();
+                    throw new Error(error.error || 'Failed to update index.html');
+                }
 
                 document.getElementById('upload-status').textContent = 'Upload successful!';
                 document.getElementById('upload-form').reset();

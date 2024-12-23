@@ -10,15 +10,5 @@
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
-  ],
-  "env": {
-    "GITHUB_TOKEN": "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",
-    "GITHUB_OWNER": "Shirozuu",
-    "GITHUB_REPO": "Web"
-  },
-  "git": {
-    "deploymentEnabled": {
-      "main": true
-    }
-  }
+  ]
 }
