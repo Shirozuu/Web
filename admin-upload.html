@@ -4,6 +4,7 @@
     <title>Upload Artwork</title>
     <link href="assets/css/style.css" rel="stylesheet" />
     <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="admin-upload">
@@ -22,17 +23,18 @@
             <button type="button" id="upload_widget" class="cloudinary-button">Upload Image</button>
         </form>
         <div id="upload-status"></div>
-        <a href="logout.html">Logout</a>
+        <div id="preview"></div>
+        <a href="logout.php">Logout</a>
     </div>
 
     <script>
-        const cloudName = 'dy7kmjs7m';
-        const uploadPreset = 'ARTWORK';
+        const cloudName = 'dy7kmjs7m'; // Replace with your Cloudinary cloud name
+        const uploadPreset = 'ARTWORK'; // Replace with your upload preset
 
         const myWidget = cloudinary.createUploadWidget({
             cloudName: cloudName,
             uploadPreset: uploadPreset,
-            maxFileSize: 50000000, // 5MB
+            maxFileSize: 5000000, // 5MB
             maxImageWidth: 2000,
             maxImageHeight: 2000,
             sources: ['local', 'url'],
@@ -57,7 +59,7 @@
         }, (error, result) => {
             if (!error && result && result.event === "success") {
                 const imageUrl = result.info.secure_url;
-                addArtworkToGallery(
+                updateGallery(
                     imageUrl, 
                     document.getElementById('title').value,
                     document.getElementById('category').value,
@@ -70,40 +72,55 @@
             myWidget.open();
         }, false);
 
-        function addArtworkToGallery(imageUrl, title, category, socialLink) {
-            const newArtwork = `
-                <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
-                    <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb" data-overlay="0">
-                        <a class="folio-item__thumb-link" target="blank" href="${imageUrl}" title="${title}" data-size="905x1280">
-                            <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imageUrl}" alt="${title}">
-                        </a>
-                    </div>
-                    <div class="folio-item__info">
-                        <div class="folio-item__cat">illustration/${category}</div>
-                        <h4 class="folio-item__title">${title}!</h4>
-                    </div>
-                    <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Social</a>
-                    <div class="folio-item__caption">
-                        <p>${title}</p>
-                    </div>
-                </div>
-            `;
+        async function updateGallery(imageUrl, title, category, socialLink) {
+            try {
+                // Create new artwork HTML
+                const artworkHTML = `
+                    <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
+                        <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb" data-overlay="0">
+                            <a class="folio-item__thumb-link" target="blank" href="${imageUrl}" title="${title}" data-size="905x1280">
+                                <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imageUrl}" alt="${title}">
+                            </a>
+                        </div>
+                        <div class="folio-item__info">
+                            <div class="folio-item__cat">illustration/${category}</div>
+                            <h4 class="folio-item__title">${title}!</h4>
+                        </div>
+                        <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Social</a>
+                        <div class="folio-item__caption">
+                            <p>${title}</p>
+                        </div>
+                    </div>`;
 
-            // Add to gallery
-            const gallerySection = document.querySelector('.dsn-isotope');
-            gallerySection.insertAdjacentHTML('afterbegin', newArtwork);
+                // Update index.html
+                const response = await fetch('/update-gallery', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        html: artworkHTML
+                    })
+                });
 
-            // Reset form
-            document.getElementById('upload-form').reset();
-            
-            // Show success message
-            const status = document.getElementById('upload-status');
-            status.textContent = 'Upload successful!';
-            status.style.color = 'green';
-            
-            // Refresh gallery layout if using Isotope
-            if (typeof $().isotope === 'function') {
-                $('.dsn-isotope').isotope('reloadItems').isotope();
+                if (response.ok) {
+                    // Show preview
+                    document.getElementById('preview').innerHTML = artworkHTML;
+                    
+                    // Show success message
+                    const status = document.getElementById('upload-status');
+                    status.textContent = 'Upload successful! Gallery has been updated.';
+                    status.style.color = 'green';
+                    
+                    // Reset form
+                    document.getElementById('upload-form').reset();
+                } else {
+                    throw new Error('Failed to update gallery');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('upload-status').textContent = 'Error: ' + error.message;
+                document.getElementById('upload-status').style.color = 'red';
             }
         }
     </script>

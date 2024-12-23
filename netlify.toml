@@ -2,6 +2,6 @@
   functions = "functions"
 
 [[redirects]]
-  from = "/admin-upload"
-  to = "/admin-upload.html"
+  from = "/update-gallery"
+  to = "/.netlify/functions/update-gallery"
   status = 200
