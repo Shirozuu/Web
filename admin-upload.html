@@ -47,9 +47,9 @@
                 const category = document.getElementById('category').value;
                 const socialLink = document.getElementById('social_link').value;
 
-                // Create artwork HTML matching the format in index.html
+                // Create artwork HTML
                 const artworkHTML = `
-                    <div class="folio-item work-item dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
+                    <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
                         <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb" data-overlay="0">
                             <a class="folio-item__thumb-link" target="blank" href="${imageUrl}" title="${title}" data-size="905x1280">
                                 <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imageUrl}" alt="">
@@ -62,24 +62,49 @@
                         <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Twitter</a>
                     </div>`;
 
-                // Show preview
-                document.getElementById('preview').innerHTML = artworkHTML;
-                
-                // Show success message
-                const status = document.getElementById('upload-status');
-                status.textContent = 'Upload successful! Redirecting to gallery...';
-                status.style.color = 'green';
-                
-                // Reset form
-                document.getElementById('upload-form').reset();
+                // Send to API to update gallery
+                fetch('/api/update-gallery', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        imageUrl,
+                        title,
+                        category,
+                        socialLink,
+                        html: artworkHTML
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update gallery');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    // Show success message
+                    const status = document.getElementById('upload-status');
+                    status.textContent = 'Upload successful! Redirecting to gallery...';
+                    status.style.color = 'green';
+                    
+                    // Reset form
+                    document.getElementById('upload-form').reset();
 
-                // Store the new artwork HTML in localStorage
-                localStorage.setItem('newArtwork', artworkHTML);
+                    // Store the new artwork HTML in localStorage for immediate display
+                    localStorage.setItem('newArtwork', artworkHTML);
 
-                // Redirect to index.html after a short delay
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1500);
+                    // Redirect to index.html after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const status = document.getElementById('upload-status');
+                    status.textContent = 'Error updating gallery: ' + error.message;
+                    status.style.color = 'red';
+                });
             }
         });
 
