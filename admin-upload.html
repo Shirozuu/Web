@@ -24,12 +24,12 @@
         </form>
         <div id="upload-status"></div>
         <div id="preview"></div>
-        <a href="logout.php">Logout</a>
+        <a href="logout.html">Logout</a>
     </div>
 
     <script>
-        const cloudName = 'dy7kmjs7m'; // Your Cloudinary cloud name
-        const uploadPreset = 'ARTWORK'; // Your upload preset
+        const cloudName = 'dy7kmjs7m'; 
+        const uploadPreset = 'ARTWORK';
 
         const myWidget = cloudinary.createUploadWidget({
             cloudName: cloudName,
@@ -57,7 +57,11 @@
 
         async function updateGallery(imageUrl, title, category, socialLink) {
             try {
-                const response = await fetch('/.netlify/functions/update-gallery', {
+                const status = document.getElementById('upload-status');
+                status.textContent = 'Updating gallery...';
+                status.style.color = 'blue';
+
+                const response = await fetch('/api/update-gallery', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -80,7 +84,6 @@
                 document.getElementById('preview').innerHTML = data.html;
                 
                 // Show success message
-                const status = document.getElementById('upload-status');
                 status.textContent = 'Upload successful!';
                 status.style.color = 'green';
                 
