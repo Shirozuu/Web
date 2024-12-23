@@ -61,7 +61,7 @@
                 status.textContent = 'Updating gallery...';
                 status.style.color = 'blue';
 
-                const response = await fetch('/api/update-gallery', {
+                const response = await fetch('/.netlify/functions/update-gallery', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -74,7 +74,13 @@
                     })
                 });
 
-                const data = await response.json();
+                let data;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    throw new Error('Server response was not JSON');
+                }
 
                 if (!response.ok) {
                     throw new Error(data.message || 'Failed to update gallery');

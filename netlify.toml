@@ -2,10 +2,11 @@
   functions = "functions"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/update-gallery"
+  to = "/.netlify/functions/update-gallery"
   status = 200
   force = true
+  methods = ["POST", "OPTIONS"]
 
 [functions]
   node_bundler = "esbuild"
