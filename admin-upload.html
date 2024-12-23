@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Artwork</title>
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="admin-upload">
+        <h2>Upload New Artwork</h2>
+        <form id="upload-form">
+            <input type="file" id="artwork" accept="image/*" required>
+            <input type="text" id="title" placeholder="Artwork Title" required>
+            <select id="category" required>
+                <option value="fanart">FanArt</option>
+                <option value="occhara">OC</option>
+                <option value="comm">Commission</option>
+                <option value="male">Male</option>
+                <option value="landscape">Splash Art</option>
+                <option value="vtube">Vtubers</option>
+            </select>
+            <input type="text" id="social_link" placeholder="Social Media Link">
+            <button type="submit">Upload</button>
+        </form>
+        <a href="logout.html">Logout</a>
+    </div>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('artwork', document.getElementById('artwork').files[0]);
+            formData.append('title', document.getElementById('title').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('social_link', document.getElementById('social_link').value);
+
+            const response = await fetch('/.netlify/functions/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Upload successful');
+            } else {
+                alert('Upload failed');
+            }
+        });
+    </script>
+</body>
+</html>
