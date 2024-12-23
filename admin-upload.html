@@ -58,48 +58,55 @@
                             <div class="folio-item__cat">illustration/${category}</div>
                             <h4 class="folio-item__title">${title}!</h4>
                         </div>
-                        <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Twitter</a>
+                        <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Social</a>
                         <div class="folio-item__caption">
                             <p>${title}</p>
                         </div>
                     </div>`;
     
                 // Add to gallery and update index.html
-                fetch('/.netlify/functions/update-gallery', {
+                fetch('/api/update-gallery', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        imageUrl,
+                        title,
+                        category,
+                        socialLink,
                         html: artworkHTML
                     })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Failed to update gallery');
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    if (data.success) {
-                        // Add to current page gallery
-                        const gallerySection = document.querySelector('.dsn-isotope');
-                        if (gallerySection) {
-                            gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
-                        }
+                    // Add to current page gallery
+                    const gallerySection = document.querySelector('.dsn-isotope');
+                    if (gallerySection) {
+                        gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
+                    }
     
-                        // Show preview
-                        document.getElementById('preview').innerHTML = artworkHTML;
-                        
-                        // Show success message
-                        const status = document.getElementById('upload-status');
-                        status.textContent = 'Upload successful!';
-                        status.style.color = 'green';
-                        
-                        // Reset form
-                        document.getElementById('upload-form').reset();
+                    // Show preview
+                    document.getElementById('preview').innerHTML = artworkHTML;
+                    
+                    // Show success message
+                    const status = document.getElementById('upload-status');
+                    status.textContent = 'Upload successful!';
+                    status.style.color = 'green';
+                    
+                    // Reset form
+                    document.getElementById('upload-form').reset();
     
-                        // Refresh gallery if isotope is present
-                        if (typeof $().isotope === 'function') {
-                            $('.dsn-isotope').isotope('reloadItems').isotope();
-                        }
-                    } else {
-                        throw new Error('Failed to update gallery');
+                    // Refresh gallery if isotope is present
+                    if (typeof $().isotope === 'function') {
+                        $('.dsn-isotope').isotope('reloadItems').isotope();
                     }
                 })
                 .catch(error => {
