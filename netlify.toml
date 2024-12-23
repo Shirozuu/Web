@@ -5,3 +5,7 @@
   from = "/update-gallery"
   to = "/.netlify/functions/update-gallery"
   status = 200
+  force = true
+
+[functions]
+  node_bundler = "esbuild"
