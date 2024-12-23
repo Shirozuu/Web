@@ -17,9 +17,9 @@
     }
   ],
   "env": {
-    "GITHUB_TOKEN": "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",
-    "GITHUB_OWNER": "Shirozuu",
-    "GITHUB_REPO": "Web"
+    "GITHUB_TOKEN": "@{GITHUB_TOKEN}",
+    "GITHUB_OWNER": "@{GITHUB_OWNER}",
+    "GITHUB_REPO": "@{GITHUB_REPO}"
   },
   "git": {
     "deploymentEnabled": {
