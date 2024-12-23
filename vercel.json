@@ -17,9 +17,9 @@
     }
   ],
   "env": {
-    "GITHUB_TOKEN": "@github_token",
-    "GITHUB_OWNER": "@github_owner",
-    "GITHUB_REPO": "@github_repo"
+    "GITHUB_TOKEN": "@GITHUB_TOKEN",
+    "GITHUB_OWNER": "@GITHUB_OWNER",
+    "GITHUB_REPO": "@GITHUB_REPO"
   },
   "git": {
     "deploymentEnabled": {
