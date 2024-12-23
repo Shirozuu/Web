@@ -30,7 +30,7 @@
     <script>
         const cloudName = 'dy7kmjs7m'; 
         const uploadPreset = 'ARTWORK';
-
+    
         const myWidget = cloudinary.createUploadWidget({
             cloudName: cloudName,
             uploadPreset: uploadPreset,
@@ -45,7 +45,7 @@
                 const title = document.getElementById('title').value;
                 const category = document.getElementById('category').value;
                 const socialLink = document.getElementById('social_link').value;
-
+    
                 // Create artwork HTML
                 const artworkHTML = `
                     <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
@@ -58,36 +58,59 @@
                             <div class="folio-item__cat">illustration/${category}</div>
                             <h4 class="folio-item__title">${title}!</h4>
                         </div>
-                        <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Social</a>
+                        <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Twitter</a>
                         <div class="folio-item__caption">
                             <p>${title}</p>
                         </div>
                     </div>`;
-
-                // Add to gallery
-                const gallerySection = document.querySelector('.dsn-isotope');
-                if (gallerySection) {
-                    gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
-                }
-
-                // Show preview
-                document.getElementById('preview').innerHTML = artworkHTML;
-                
-                // Show success message
-                const status = document.getElementById('upload-status');
-                status.textContent = 'Upload successful!';
-                status.style.color = 'green';
-                
-                // Reset form
-                document.getElementById('upload-form').reset();
-
-                // Refresh gallery if isotope is present
-                if (typeof $().isotope === 'function') {
-                    $('.dsn-isotope').isotope('reloadItems').isotope();
-                }
+    
+                // Add to gallery and update index.html
+                fetch('/.netlify/functions/update-gallery', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        html: artworkHTML
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Add to current page gallery
+                        const gallerySection = document.querySelector('.dsn-isotope');
+                        if (gallerySection) {
+                            gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
+                        }
+    
+                        // Show preview
+                        document.getElementById('preview').innerHTML = artworkHTML;
+                        
+                        // Show success message
+                        const status = document.getElementById('upload-status');
+                        status.textContent = 'Upload successful!';
+                        status.style.color = 'green';
+                        
+                        // Reset form
+                        document.getElementById('upload-form').reset();
+    
+                        // Refresh gallery if isotope is present
+                        if (typeof $().isotope === 'function') {
+                            $('.dsn-isotope').isotope('reloadItems').isotope();
+                        }
+                    } else {
+                        throw new Error('Failed to update gallery');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const status = document.getElementById('upload-status');
+                    status.textContent = 'Error updating gallery: ' + error.message;
+                    status.style.color = 'red';
+                });
             }
         });
-
+    
         document.getElementById("upload_widget").addEventListener("click", function() {
             if (!document.getElementById('title').value) {
                 alert('Please enter a title first');
