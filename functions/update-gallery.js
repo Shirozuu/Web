@@ -1,6 +1,4 @@
 const { builder } = require("@netlify/functions");
-const fs = require('fs').promises;
-const path = require('path');
 
 async function handler(event) {
     const headers = {

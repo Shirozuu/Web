@@ -30,7 +30,7 @@
     <script>
         const cloudName = 'dy7kmjs7m'; 
         const uploadPreset = 'ARTWORK';
-    
+
         const myWidget = cloudinary.createUploadWidget({
             cloudName: cloudName,
             uploadPreset: uploadPreset,
@@ -45,7 +45,7 @@
                 const title = document.getElementById('title').value;
                 const category = document.getElementById('category').value;
                 const socialLink = document.getElementById('social_link').value;
-    
+
                 // Create artwork HTML
                 const artworkHTML = `
                     <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
@@ -63,7 +63,7 @@
                             <p>${title}</p>
                         </div>
                     </div>`;
-    
+
                 // Add to gallery and update index.html
                 fetch('/api/update-gallery', {
                     method: 'POST',
@@ -92,7 +92,7 @@
                     if (gallerySection) {
                         gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
                     }
-    
+
                     // Show preview
                     document.getElementById('preview').innerHTML = artworkHTML;
                     
@@ -103,7 +103,7 @@
                     
                     // Reset form
                     document.getElementById('upload-form').reset();
-    
+
                     // Refresh gallery if isotope is present
                     if (typeof $().isotope === 'function') {
                         $('.dsn-isotope').isotope('reloadItems').isotope();
@@ -117,7 +117,7 @@
                 });
             }
         });
-    
+
         document.getElementById("upload_widget").addEventListener("click", function() {
             if (!document.getElementById('title').value) {
                 alert('Please enter a title first');
