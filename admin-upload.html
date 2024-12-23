@@ -46,50 +46,45 @@
                 const category = document.getElementById('category').value;
                 const socialLink = document.getElementById('social_link').value;
 
-                // Create artwork HTML
+                // Create artwork HTML matching the format in index.html
                 const artworkHTML = `
-                    <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
+                    <div class="folio-item work-item dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
                         <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb" data-overlay="0">
-                            <a class="folio-item__thumb-link" target="_blank" href="${imageUrl}" title="${title}" data-size="905x1280">
-                                <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imageUrl}" alt="${title}">
+                            <a class="folio-item__thumb-link" target="blank" href="${imageUrl}" title="${title}" data-size="905x1280">
+                                <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imageUrl}" alt="">
                             </a>
                         </div>
                         <div class="folio-item__info">
-                            <div class="folio-item__cat">illustration/${category}</div>
+                            <div class="folio-item__cat">illustration/${category} ${new Date().getFullYear()}</div>
                             <h4 class="folio-item__title">${title}!</h4>
                         </div>
-                        <a target="_blank" href="${socialLink}" title="Social" class="folio-item__project-link">Social</a>
-                        <div class="folio-item__caption">
-                            <p>${title}</p>
-                        </div>
+                        <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Twitter</a>
                     </div>`;
 
-                // Add to gallery section in index.html
+                // Add to gallery section
                 const gallerySection = document.getElementById('gallery-section');
                 if (gallerySection) {
+                    // Insert at the beginning of the gallery
                     gallerySection.insertAdjacentHTML('afterbegin', artworkHTML);
 
-                    // Scroll to the top of the gallery section to show the new artwork
-                    gallerySection.scrollIntoView({ behavior: 'smooth' });
+                    // Show preview
+                    document.getElementById('preview').innerHTML = artworkHTML;
+                    
+                    // Show success message
+                    const status = document.getElementById('upload-status');
+                    status.textContent = 'Upload successful! Artwork added to gallery.';
+                    status.style.color = 'green';
+                    
+                    // Reset form
+                    document.getElementById('upload-form').reset();
 
-                    // Refresh gallery if isotope is present
+                    // Refresh isotope layout
                     if (typeof $().isotope === 'function') {
                         $('.dsn-isotope').isotope('reloadItems').isotope();
                     }
                 } else {
-                    console.error('Gallery section not found');
+                    console.error('Gallery section not found - check the gallery-section ID exists');
                 }
-
-                // Show preview
-                document.getElementById('preview').innerHTML = artworkHTML;
-                
-                // Show success message
-                const status = document.getElementById('upload-status');
-                status.textContent = 'Upload successful!';
-                status.style.color = 'green';
-                
-                // Reset form
-                document.getElementById('upload-form').reset();
             }
         });
 
