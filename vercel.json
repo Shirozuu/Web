@@ -17,13 +17,13 @@
     }
   ],
   "env": {
-    "GITHUB_TOKEN": "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",
-    "GITHUB_OWNER": "Shirozuu",
-    "GITHUB_REPO": "Web",
-    "VERCEL_TOKEN": "fEYkA3YPsiYXQOAldRJ5iSN9",
-    "VERCEL_TEAM_ID": "team_2PbYA7kryR0ii8Nomsij1toF",
-    "VERCEL_PROJECT_ID": "prj_CFcmA4NCA3zjkjK4u0OBedzuvj9b",
-    "VERCEL_PROJECT_NAME": "Web"
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+    "GITHUB_OWNER": "${GITHUB_OWNER}",
+    "GITHUB_REPO": "${GITHUB_REPO}", 
+    "VERCEL_TOKEN": "${VERCEL_TOKEN}",
+    "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}",
+    "VERCEL_PROJECT_ID": "${VERCEL_PROJECT_ID}",
+    "VERCEL_PROJECT_NAME": "${VERCEL_PROJECT_NAME}"
   },
   "git": {
     "deploymentEnabled": {

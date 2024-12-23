@@ -1,1 +1,11 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Vercel
 .vercel
+
+# Build files
+node_modules/
+dist/
