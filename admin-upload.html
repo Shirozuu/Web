@@ -3,12 +3,12 @@
 <head>
     <title>Upload Artwork</title>
     <link href="assets/css/style.css" rel="stylesheet" />
+    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
 </head>
 <body>
     <div class="admin-upload">
         <h2>Upload New Artwork</h2>
         <form id="upload-form">
-            <input type="file" id="artwork" accept="image/*" required>
             <input type="text" id="title" placeholder="Artwork Title" required>
             <select id="category" required>
                 <option value="fanart">FanArt</option>
@@ -19,30 +19,93 @@
                 <option value="vtube">Vtubers</option>
             </select>
             <input type="text" id="social_link" placeholder="Social Media Link">
-            <button type="submit">Upload</button>
+            <button type="button" id="upload_widget" class="cloudinary-button">Upload Image</button>
         </form>
+        <div id="upload-status"></div>
         <a href="logout.html">Logout</a>
     </div>
+
     <script>
-        document.getElementById('upload-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('artwork', document.getElementById('artwork').files[0]);
-            formData.append('title', document.getElementById('title').value);
-            formData.append('category', document.getElementById('category').value);
-            formData.append('social_link', document.getElementById('social_link').value);
+        const cloudName = 'dy7kmjs7m';
+        const uploadPreset = 'ARTWORK';
 
-            const response = await fetch('/.netlify/functions/upload', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                alert('Upload successful');
-            } else {
-                alert('Upload failed');
+        const myWidget = cloudinary.createUploadWidget({
+            cloudName: cloudName,
+            uploadPreset: uploadPreset,
+            maxFileSize: 50000000, // 5MB
+            maxImageWidth: 2000,
+            maxImageHeight: 2000,
+            sources: ['local', 'url'],
+            multiple: false,
+            styles: {
+                palette: {
+                    window: "#FFFFFF",
+                    windowBorder: "#90A0B3",
+                    tabIcon: "#0078FF",
+                    menuIcons: "#5A616A",
+                    textDark: "#000000",
+                    textLight: "#FFFFFF",
+                    link: "#0078FF",
+                    action: "#FF620C",
+                    inactiveTabIcon: "#0E2F5A",
+                    error: "#F44235",
+                    inProgress: "#0078FF",
+                    complete: "#20B832",
+                    sourceBg: "#E4EBF1"
+                }
+            }
+        }, (error, result) => {
+            if (!error && result && result.event === "success") {
+                const imageUrl = result.info.secure_url;
+                addArtworkToGallery(
+                    imageUrl, 
+                    document.getElementById('title').value,
+                    document.getElementById('category').value,
+                    document.getElementById('social_link').value
+                );
             }
         });
+
+        document.getElementById("upload_widget").addEventListener("click", function() {
+            myWidget.open();
+        }, false);
+
+        function addArtworkToGallery(imageUrl, title, category, socialLink) {
+            const newArtwork = `
+                <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
+                    <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb" data-overlay="0">
+                        <a class="folio-item__thumb-link" target="blank" href="${imageUrl}" title="${title}" data-size="905x1280">
+                            <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imageUrl}" alt="${title}">
+                        </a>
+                    </div>
+                    <div class="folio-item__info">
+                        <div class="folio-item__cat">illustration/${category}</div>
+                        <h4 class="folio-item__title">${title}!</h4>
+                    </div>
+                    <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Social</a>
+                    <div class="folio-item__caption">
+                        <p>${title}</p>
+                    </div>
+                </div>
+            `;
+
+            // Add to gallery
+            const gallerySection = document.querySelector('.dsn-isotope');
+            gallerySection.insertAdjacentHTML('afterbegin', newArtwork);
+
+            // Reset form
+            document.getElementById('upload-form').reset();
+            
+            // Show success message
+            const status = document.getElementById('upload-status');
+            status.textContent = 'Upload successful!';
+            status.style.color = 'green';
+            
+            // Refresh gallery layout if using Isotope
+            if (typeof $().isotope === 'function') {
+                $('.dsn-isotope').isotope('reloadItems').isotope();
+            }
+        }
     </script>
 </body>
 </html>
