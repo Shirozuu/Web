@@ -85,6 +85,9 @@
                 if (typeof $().isotope === 'function') {
                     $('.dsn-isotope').isotope('reloadItems').isotope();
                 }
+
+                // Scroll to the top of the gallery section to show the new artwork
+                gallerySection.scrollIntoView({ behavior: 'smooth' });
             }
         });
 
