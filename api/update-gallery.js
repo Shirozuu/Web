@@ -13,15 +13,15 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Initialize Octokit with environment variables
+        // Initialize Octokit with GitHub token
         const octokit = new Octokit({
             auth: process.env.GITHUB_TOKEN
         });
 
         // Get current content of index.html
         const { data: currentFile } = await octokit.repos.getContent({
-            owner: 'Shirozuu',
-            repo: 'Web',
+            owner: process.env.GITHUB_OWNER,
+            repo: process.env.GITHUB_REPO,
             path: 'index.html'
         });
 
@@ -48,17 +48,41 @@ export default async function handler(req, res) {
 
         // Update the file in GitHub
         await octokit.repos.createOrUpdateFileContents({
-            owner: 'Shirozuu',
-            repo: 'Web',
+            owner: process.env.GITHUB_OWNER,
+            repo: process.env.GITHUB_REPO,
             path: 'index.html',
             message: `Add new artwork: ${title}`,
             content: Buffer.from(updatedContent).toString('base64'),
-            sha: currentFile.sha
+            sha: currentFile.sha,
+            branch: 'main' // Specify the branch
+        });
+
+        // Trigger Vercel deployment using the Vercel API
+        const vercelToken = process.env.VERCEL_TOKEN;
+        const vercelTeamId = process.env.VERCEL_TEAM_ID;
+        const vercelProjectId = process.env.VERCEL_PROJECT_ID;
+
+        await fetch(`https://api.vercel.com/v1/deployments`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${vercelToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: process.env.VERCEL_PROJECT_NAME,
+                project: vercelProjectId,
+                teamId: vercelTeamId,
+                target: 'production',
+                gitSource: {
+                    type: 'github',
+                    ref: 'main'
+                }
+            })
         });
 
         return res.status(200).json({
             success: true,
-            message: 'Gallery updated successfully'
+            message: 'Gallery updated successfully and deployment triggered'
         });
 
     } catch (error) {

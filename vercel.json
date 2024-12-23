@@ -9,8 +9,17 @@
     { "src": "/api/(.*)", "dest": "/api/$1" }
   ],
   "env": {
-    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+    "GITHUB_TOKEN": "@github_token",
     "GITHUB_OWNER": "Shirozuu",
-    "GITHUB_REPO": "Web"
+    "GITHUB_REPO": "Web",
+    "VERCEL_TOKEN": "@vercel_token",
+    "VERCEL_TEAM_ID": "@vercel_team_id",
+    "VERCEL_PROJECT_ID": "@vercel_project_id",
+    "VERCEL_PROJECT_NAME": "Web"
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
   }
 }
