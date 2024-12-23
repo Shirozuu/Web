@@ -1,5 +1,3 @@
-const { Octokit } = require('@octokit/rest');
-
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -7,44 +5,58 @@ module.exports = async (req, res) => {
 
     const { path, content, message } = req.body;
 
-    const octokit = new Octokit({
-        auth: process.env.GITHUB_TOKEN
-    });
-
     try {
         // Get current file content if exists
-        let currentFile;
+        let sha;
         try {
-            currentFile = await octokit.repos.getContent({
-                owner: process.env.GITHUB_OWNER,
-                repo: process.env.GITHUB_REPO,
-                path: path
-            });
+            const getResponse = await fetch(
+                `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`, 
+                {
+                    headers: {
+                        'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            if (getResponse.ok) {
+                const data = await getResponse.json();
+                sha = data.sha;
+            }
         } catch (e) {
             // File doesn't exist yet, which is fine
         }
 
         // Create or update file
-        const response = await octokit.repos.createOrUpdateFileContents({
-            owner: process.env.GITHUB_OWNER,
-            repo: process.env.GITHUB_REPO,
-            path: path,
-            message: message,
-            content: content,
-            sha: currentFile?.data?.sha,
-            committer: {
-                name: 'Artwork Upload Bot',
-                email: 'bot@example.com'
-            },
-            author: {
-                name: 'Artwork Upload Bot',
-                email: 'bot@example.com'
+        const response = await fetch(
+            `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    content: content,
+                    sha: sha,
+                    committer: {
+                        name: 'Artwork Upload Bot',
+                        email: 'bot@example.com'
+                    }
+                })
             }
-        });
+        );
 
-        res.status(200).json({ success: true });
+        if (!response.ok) {
+            throw new Error(`GitHub API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        res.status(200).json({ success: true, data });
+
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Failed to upload file to GitHub' });
+        res.status(500).json({ error: error.message || 'Failed to upload file to GitHub' });
     }
 };
