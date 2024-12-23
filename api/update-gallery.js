@@ -1,5 +1,5 @@
 // api/update-gallery.js
-module.exports = (req, res) => {
+export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -12,6 +12,8 @@ module.exports = (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        // Here we just return success since we're handling the gallery update 
+        // on the client side through localStorage
         return res.status(200).json({
             success: true,
             message: 'Gallery updated successfully',
@@ -24,4 +26,4 @@ module.exports = (req, res) => {
             message: error.message
         });
     }
-};
+}

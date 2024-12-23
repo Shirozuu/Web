@@ -40,6 +40,7 @@
             sources: ['local', 'url'],
             multiple: false
         }, (error, result) => {
+            // Inside the upload widget success callback
             if (!error && result && result.event === "success") {
                 const imageUrl = result.info.secure_url;
                 const title = document.getElementById('title').value;

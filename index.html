@@ -1089,8 +1089,8 @@
                                     <script src="assets/js/dsn-grid.min.js"></script>
                                     <script src="assets/js/custom.js"></script>
                                     <script>
-                                        // Check for new artwork in localStorage
-                                        window.addEventListener('load', function() {
+                                        // Check for new artwork in localStorage when index.html loads
+                                        document.addEventListener('DOMContentLoaded', function() {
                                             const newArtwork = localStorage.getItem('newArtwork');
                                             if (newArtwork) {
                                                 // Get the gallery section
@@ -1106,9 +1106,6 @@
                                                     if (typeof $().isotope === 'function') {
                                                         $('.dsn-isotope').isotope('reloadItems').isotope();
                                                     }
-                                        
-                                                    // Scroll to the new artwork
-                                                    gallerySection.scrollIntoView({ behavior: 'smooth' });
                                                 }
                                             }
                                         });
