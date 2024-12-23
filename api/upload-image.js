@@ -1,4 +1,4 @@
-// api/upload-image.js
+import formidable from 'formidable';
 import { v2 as cloudinary } from 'cloudinary';
 
 // Configure Cloudinary
@@ -8,17 +8,25 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Get image file from request
-    const file = req.body.file;
+    const form = new formidable.IncomingForm();
     
+    const [fields, files] = await form.parse(req);
+    const file = files.image[0];
+
     // Upload image to Cloudinary
-    const result = await cloudinary.uploader.upload(file, {
+    const result = await cloudinary.uploader.upload(file.filepath, {
       folder: 'artwork'
     });
 

@@ -7,6 +7,7 @@
     "aws-sdk": "^2.1584.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
+    "formidable": "^3.5.2",
     "php": "^1.0.2"
   }
 }
