@@ -82,6 +82,9 @@
                     return response.json();
                 })
                 .then(() => {
+                    // Store new artwork in localStorage first
+                    localStorage.setItem('newArtwork', artworkHTML);
+                    
                     // Show success message
                     const status = document.getElementById('upload-status');
                     status.textContent = 'Upload successful! Redirecting to gallery...';
@@ -90,10 +93,8 @@
                     // Reset form
                     document.getElementById('upload-form').reset();
 
-                    // Redirect to index.html after a short delay
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                    // Redirect to index.html
+                    window.location.href = 'index.html';
                 })
                 .catch(error => {
                     console.error('Error:', error);
