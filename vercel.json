@@ -9,7 +9,7 @@
     { "src": "/api/(.*)", "dest": "/api/$1" }
   ],
   "env": {
-    "GITHUB_TOKEN": "@github_token",
+    "GITHUB_TOKEN": "@GITHUB_TOKEN",
     "GITHUB_OWNER": "Shirozuu",
     "GITHUB_REPO": "Web",
     "VERCEL_TOKEN": "@vercel_token",
