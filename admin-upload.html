@@ -40,7 +40,6 @@
             sources: ['local', 'url'],
             multiple: false
         }, (error, result) => {
-            // Inside the upload widget success callback
             if (!error && result && result.event === "success") {
                 const imageUrl = result.info.secure_url;
                 const title = document.getElementById('title').value;
@@ -49,7 +48,7 @@
 
                 // Create artwork HTML
                 const artworkHTML = `
-                    <div class="folio-item work-item mt-80 dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
+                    <div class="folio-item work-item dsn-col-md-2 dsn-col-lg-3 Product column ${category}" data-aos="fade-up">
                         <div class="has-popup box-img before-z-index z-index-0 p-relative over-hidden folio-item__thumb" data-overlay="0">
                             <a class="folio-item__thumb-link" target="blank" href="${imageUrl}" title="${title}" data-size="905x1280">
                                 <img class="cover-bg-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-dsn-src="${imageUrl}" alt="">
@@ -62,7 +61,7 @@
                         <a target="blank" href="${socialLink}" title="Social" class="folio-item__project-link">Twitter</a>
                     </div>`;
 
-                // Send to API to update gallery
+                // Send to API
                 fetch('/api/update-gallery', {
                     method: 'POST',
                     headers: {
@@ -91,9 +90,6 @@
                     // Reset form
                     document.getElementById('upload-form').reset();
 
-                    // Store the new artwork HTML in localStorage for immediate display
-                    localStorage.setItem('newArtwork', artworkHTML);
-
                     // Redirect to index.html after a short delay
                     setTimeout(() => {
                         window.location.href = 'index.html';
@@ -109,10 +105,6 @@
         });
 
         document.getElementById("upload_widget").addEventListener("click", function() {
-            if (!document.getElementById('title').value) {
-                alert('Please enter a title first');
-                return;
-            }
             myWidget.open();
         }, false);
     </script>
