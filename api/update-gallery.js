@@ -13,20 +13,15 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Validate environment variables
-        if (!process.env.GITHUB_TOKEN || !process.env.GITHUB_OWNER || !process.env.GITHUB_REPO) {
-            throw new Error('Missing GitHub configuration');
-        }
-
-        // Initialize Octokit with your GitHub token
+        // Initialize Octokit with environment variables
         const octokit = new Octokit({
             auth: process.env.GITHUB_TOKEN
         });
 
         // Get current content of index.html
         const { data: currentFile } = await octokit.repos.getContent({
-            owner: process.env.GITHUB_OWNER,
-            repo: process.env.GITHUB_REPO,
+            owner: 'Shirozuu',
+            repo: 'Web',
             path: 'index.html'
         });
 
@@ -41,20 +36,20 @@ export default async function handler(req, res) {
             throw new Error('Gallery section not found in index.html');
         }
 
-        // Find where to insert the new artwork (after the opening tag)
+        // Find where to insert the new artwork
         const openingTagEnd = content.indexOf('>', insertPosition) + 1;
         
-        // Insert the new artwork HTML right after the gallery section opening tag
+        // Insert the new artwork HTML
         const updatedContent = 
             content.slice(0, openingTagEnd) + 
-            '\n                                ' + // Maintain indentation
+            '\n                                ' +
             html +
             content.slice(openingTagEnd);
 
         // Update the file in GitHub
         await octokit.repos.createOrUpdateFileContents({
-            owner: process.env.GITHUB_OWNER,
-            repo: process.env.GITHUB_REPO,
+            owner: 'Shirozuu',
+            repo: 'Web',
             path: 'index.html',
             message: `Add new artwork: ${title}`,
             content: Buffer.from(updatedContent).toString('base64'),

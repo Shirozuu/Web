@@ -3,17 +3,14 @@
   "builds": [
     { "src": "*.html", "use": "@vercel/static" },
     { "src": "assets/**/*", "use": "@vercel/static" },
-    { "src": "js/**/*", "use": "@vercel/static" },
-    { "src": "css/**/*", "use": "@vercel/static" },
-    { "src": "api/**/*.js", "use": "@vercel/node" }
+    { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "handle": "filesystem" }
-],
-"env": {
-  "GITHUB_TOKEN": "@github_token",
-  "GITHUB_OWNER": "@github_owner", 
-  "GITHUB_REPO": "@github_repo"
-}
+    { "src": "/api/(.*)", "dest": "/api/$1" }
+  ],
+  "env": {
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+    "GITHUB_OWNER": "Shirozuu",
+    "GITHUB_REPO": "Web"
+  }
 }
